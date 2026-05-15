@@ -31,7 +31,14 @@ module "key_vault" {
   tags                          = var.tags
 }
 
-# Phase 4 - defender module goes here
+module "defender" {
+  source = "./modules/defender"
+
+  subscription_id            = var.subscription_id
+  security_contact_email     = var.security_contact_email
+  log_analytics_workspace_id = module.key_vault.log_analytics_workspace_id
+}
+
 # Phase 5 - sentinel module goes here
 # Phase 6 - playbooks module goes here
 # Phase 7 - monitoring module goes here

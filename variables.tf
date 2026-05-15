@@ -46,6 +46,11 @@ variable "key_vault_name" {
   description = "Globally unique Key Vault name (3-24 chars, alphanumeric and hyphens)"
 }
 
+variable "security_contact_email" {
+  type        = string
+  description = "Email address for Defender for Cloud security alerts"
+}
+
 variable "trusted_ip_ranges" {
   type        = list(string)
   description = "Trusted IP ranges in CIDR notation excluded from MFA policy"

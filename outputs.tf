@@ -49,3 +49,11 @@ output "log_analytics_workspace_id" {
 output "log_analytics_workspace_name" {
   value = module.key_vault.log_analytics_workspace_name
 }
+
+output "key_vault_defender_tier" {
+  value = module.defender.key_vault_defender_tier
+}
+
+output "storage_defender_tier" {
+  value = module.defender.storage_defender_tier
+}

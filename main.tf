@@ -39,6 +39,11 @@ module "defender" {
   log_analytics_workspace_id = module.key_vault.log_analytics_workspace_id
 }
 
-# Phase 5 - sentinel module goes here
+module "sentinel" {
+  source = "./modules/sentinel"
+
+  log_analytics_workspace_id = module.key_vault.log_analytics_workspace_id
+}
+
 # Phase 6 - playbooks module goes here
 # Phase 7 - monitoring module goes here

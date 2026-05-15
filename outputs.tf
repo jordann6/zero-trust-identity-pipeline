@@ -57,3 +57,7 @@ output "key_vault_defender_tier" {
 output "storage_defender_tier" {
   value = module.defender.storage_defender_tier
 }
+
+output "sentinel_workspace_id" {
+  value = module.sentinel.sentinel_workspace_id
+}

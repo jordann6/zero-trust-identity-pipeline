@@ -137,7 +137,7 @@ verify() {
 
 main() {
   check_env
-  configure_pim
+  echo "  Skipping PIM - requires Entra ID P2"
   connect_sentinel
   verify
   echo "==> Bootstrap complete"

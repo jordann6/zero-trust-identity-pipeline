@@ -34,10 +34,18 @@ output "test_user_object_ids" {
   value = module.entra_identity.test_user_object_ids
 }
 
-output "policy_require_mfa_id" {
-  value = module.conditional_access.policy_require_mfa_id
+output "key_vault_id" {
+  value = module.key_vault.key_vault_id
 }
 
-output "policy_block_legacy_auth_id" {
-  value = module.conditional_access.policy_block_legacy_auth_id
+output "key_vault_uri" {
+  value = module.key_vault.key_vault_uri
+}
+
+output "log_analytics_workspace_id" {
+  value = module.key_vault.log_analytics_workspace_id
+}
+
+output "log_analytics_workspace_name" {
+  value = module.key_vault.log_analytics_workspace_name
 }

@@ -33,12 +33,17 @@ variable "resource_group_name" {
 
 variable "tenant_domain" {
   type        = string
-  description = "Primary domain of the Entra ID tenant (e.g. contoso.onmicrosoft.com)"
+  description = "Primary domain of the Entra ID tenant"
 }
 
 variable "storage_account_name" {
   type        = string
-  description = "Globally unique name for the demo storage account (3-24 chars, lowercase alphanumeric)"
+  description = "Globally unique name for the demo storage account"
+}
+
+variable "key_vault_name" {
+  type        = string
+  description = "Globally unique Key Vault name (3-24 chars, alphanumeric and hyphens)"
 }
 
 variable "trusted_ip_ranges" {
@@ -49,7 +54,7 @@ variable "trusted_ip_ranges" {
 
 variable "break_glass_user_ids" {
   type        = list(string)
-  description = "Object IDs of break-glass accounts excluded from all Conditional Access policies"
+  description = "Object IDs of break-glass accounts excluded from Conditional Access policies"
   default     = []
 }
 

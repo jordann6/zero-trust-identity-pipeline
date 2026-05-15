@@ -12,13 +12,25 @@ module "entra_identity" {
 }
 
 # module "conditional_access" {
-  source = "./modules/conditional_access"
+#   source = "./modules/conditional_access"
+#   trusted_ip_ranges    = var.trusted_ip_ranges
+#   break_glass_user_ids = var.break_glass_user_ids
+# }
 
-  trusted_ip_ranges    = var.trusted_ip_ranges
-  break_glass_user_ids = var.break_glass_user_ids
+module "key_vault" {
+  source = "./modules/key_vault"
+
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  tenant_id                     = var.tenant_id
+  terraform_client_id           = var.client_id
+  key_vault_name                = var.key_vault_name
+  log_analytics_workspace_name  = "zt-identity-law"
+  managed_identity_principal_id = module.entra_identity.managed_identity_principal_id
+  app_registration_object_id    = module.entra_identity.app_registration_object_id
+  tags                          = var.tags
 }
 
-# Phase 3 - key_vault module goes here
 # Phase 4 - defender module goes here
 # Phase 5 - sentinel module goes here
 # Phase 6 - playbooks module goes here

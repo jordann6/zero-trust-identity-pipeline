@@ -69,3 +69,11 @@ output "logic_app_id" {
 output "logic_app_name" {
   value = module.playbooks.logic_app_name
 }
+
+output "action_group_id" {
+  value = module.monitoring.action_group_id
+}
+
+output "action_group_name" {
+  value = module.monitoring.action_group_name
+}

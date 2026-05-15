@@ -57,4 +57,13 @@ module "playbooks" {
   tags                          = var.tags
 }
 
-# Phase 7 - monitoring module goes here
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  resource_group_name = var.resource_group_name
+  alert_email         = var.security_contact_email
+  webhook_url         = var.webhook_url
+  key_vault_id        = module.key_vault.key_vault_id
+  subscription_scope  = "/subscriptions/${var.subscription_id}"
+  tags                = var.tags
+}

@@ -51,6 +51,16 @@ variable "security_contact_email" {
   description = "Email address for Defender for Cloud security alerts"
 }
 
+variable "sentinel_service_principal_id" {
+  type        = string
+  description = "Object ID of the Microsoft Sentinel service principal"
+}
+
+variable "webhook_url" {
+  type        = string
+  description = "Webhook URL for Logic App incident notifications"
+}
+
 variable "trusted_ip_ranges" {
   type        = list(string)
   description = "Trusted IP ranges in CIDR notation excluded from MFA policy"

@@ -45,5 +45,16 @@ module "sentinel" {
   log_analytics_workspace_id = module.key_vault.log_analytics_workspace_id
 }
 
-# Phase 6 - playbooks module goes here
+module "playbooks" {
+  source = "./modules/playbooks"
+
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  tenant_id                     = var.tenant_id
+  log_analytics_workspace_id    = module.key_vault.log_analytics_workspace_id
+  sentinel_service_principal_id = var.sentinel_service_principal_id
+  webhook_url                   = var.webhook_url
+  tags                          = var.tags
+}
+
 # Phase 7 - monitoring module goes here

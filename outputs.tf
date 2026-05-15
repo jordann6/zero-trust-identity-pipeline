@@ -61,3 +61,11 @@ output "storage_defender_tier" {
 output "sentinel_workspace_id" {
   value = module.sentinel.sentinel_workspace_id
 }
+
+output "logic_app_id" {
+  value = module.playbooks.logic_app_id
+}
+
+output "logic_app_name" {
+  value = module.playbooks.logic_app_name
+}

@@ -41,6 +41,18 @@ variable "storage_account_name" {
   description = "Globally unique name for the demo storage account (3-24 chars, lowercase alphanumeric)"
 }
 
+variable "trusted_ip_ranges" {
+  type        = list(string)
+  description = "Trusted IP ranges in CIDR notation excluded from MFA policy"
+  default     = ["0.0.0.0/32"]
+}
+
+variable "break_glass_user_ids" {
+  type        = list(string)
+  description = "Object IDs of break-glass accounts excluded from all Conditional Access policies"
+  default     = []
+}
+
 variable "tags" {
   type = map(string)
   default = {

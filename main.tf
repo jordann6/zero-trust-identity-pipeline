@@ -11,7 +11,13 @@ module "entra_identity" {
   tags                  = var.tags
 }
 
-# Phase 2 - conditional_access module goes here
+# module "conditional_access" {
+  source = "./modules/conditional_access"
+
+  trusted_ip_ranges    = var.trusted_ip_ranges
+  break_glass_user_ids = var.break_glass_user_ids
+}
+
 # Phase 3 - key_vault module goes here
 # Phase 4 - defender module goes here
 # Phase 5 - sentinel module goes here

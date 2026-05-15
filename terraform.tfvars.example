@@ -1,0 +1,8 @@
+tenant_id            = "<your-tenant-id>"
+subscription_id      = "<your-subscription-id>"
+client_id            = "<app-registration-client-id>"
+client_secret        = "<app-registration-client-secret>"
+tenant_domain        = "<your-tenant>.onmicrosoft.com"
+storage_account_name = "ztidentitylab<suffix>"
+location             = "eastus"
+resource_group_name  = "zero-trust-identity-rg"

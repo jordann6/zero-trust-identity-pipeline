@@ -4,37 +4,23 @@ A production-grade identity security pipeline built on Azure that enforces Zero 
 
 ## Architecture
 
-```
-Microsoft Entra ID (Identity Plane)
-  Users · Groups · App Registration · Managed Identity
+![Architecture](docs/architecture.png)
 
-Workload Security
-  Key Vault (RBAC · secrets · audit logs)
-  Storage Account (OAuth only · no shared keys)
-  GitHub Actions (federated OIDC credential · no stored secrets)
+The pipeline is structured in four layers, each enforcing a distinct Zero Trust control:
 
-Threat Detection
-  Defender for Cloud (Key Vault · Storage · ARM · Standard tier)
-  Log Analytics Workspace (central log store)
-  Microsoft Sentinel (5 MITRE ATT&CK mapped analytics rules)
+| Layer | Components |
+|---|---|
+| **Identity Plane** | Entra ID · Users & Groups · App Registration · Managed Identity · Conditional Access · PIM |
+| **Workload Security** | Key Vault (RBAC, no access policies) · Storage Account (OAuth only) · GitHub Actions OIDC |
+| **Threat Detection** | Defender for Cloud · Log Analytics Workspace · Microsoft Sentinel |
+| **Response & Alerting** | Logic App playbook · Azure Monitor · Action Group (email + webhook) |
 
-Response & Alerting
-  Logic App (incident playbook · webhook notification)
-  Azure Monitor (4 activity log alerts)
-  Action Group (email · webhook)
-```
+## What It Does
 
-## Design Decisions
-
-**RBAC over legacy access policies.** Every resource in this pipeline uses Azure role-based access control. Key Vault has no access policies. Storage has no shared keys. This enforces the principle of least privilege at the data plane level, not just the control plane.
-
-**Managed identity over service principal secrets.** The demo workload uses a user-assigned managed identity with a scoped Storage Blob Data Reader role assignment. No credentials are stored anywhere in the pipeline.
-
-**Federated identity for CI.** The app registration carries an OIDC federated credential for GitHub Actions. The CI pipeline authenticates via token exchange, eliminating the rotation problem for static secrets in repositories.
-
-**CLI for what Terraform cannot own.** PIM eligible role assignments and Sentinel data connectors sit outside Terraform state and are managed via `scripts/bootstrap.sh`. This is a deliberate architectural decision, not a gap. Resources that require P2 licensing or Defender portal enrollment on personal tenants are documented rather than forced.
-
-**Separate teardown lifecycle.** `scripts/teardown.sh` handles resource ordering that Terraform destroy gets wrong: Sentinel connectors and automation rules before the workspace, Key Vault purge before reprovisioning, PIM cleanup before role assignments.
+- **Zero standing permissions.** PIM enforces just-in-time privileged access with eligible role assignments requiring explicit activation. No permanent high-privilege assignments exist.
+- **No stored credentials, anywhere.** Managed Identity authenticates to Key Vault and Storage. GitHub Actions uses OIDC federated identity against the app registration. No secrets in repos, pipelines, or config files.
+- **RBAC at every data plane.** Key Vault uses RBAC (no access policies). Storage disallows shared keys. All assignments are scoped to the minimum required role.
+- **Detection-to-response automation.** Sentinel ingests logs from Defender for Cloud via Log Analytics. Five MITRE ATT&CK-mapped analytics rules trigger a Logic App playbook that fires a webhook notification — no manual triage required.
 
 ## Modules
 
@@ -58,15 +44,25 @@ Response & Alerting
 | Key Vault access from unfamiliar IP | Credential Access | T1552 |
 | Bulk user deletion | Impact | T1531 |
 
+## Design Decisions
+
+**RBAC over legacy access policies.** Every resource uses Azure RBAC. Key Vault has no access policies. Storage has no shared keys. This enforces least privilege at the data plane, not just the control plane.
+
+**Managed identity over service principal secrets.** The workload uses a user-assigned managed identity with a scoped Storage Blob Data Reader role. No credentials exist anywhere in the pipeline.
+
+**Federated identity for CI.** The app registration carries an OIDC federated credential for GitHub Actions. Authentication happens via token exchange — no secret rotation problem.
+
+**CLI for what Terraform cannot own.** PIM eligible role assignments and Sentinel data connectors sit outside Terraform state and are managed via `scripts/bootstrap.sh`. Resources that require P2 licensing or Defender portal enrollment on personal tenants are documented rather than forced.
+
+**Separate teardown lifecycle.** `scripts/teardown.sh` handles resource ordering that Terraform destroy gets wrong: Sentinel connectors before the workspace, Key Vault purge before reprovisioning, PIM cleanup before role assignments.
+
 ## Tenant Limitations (Personal Account)
 
 This project was built on a personal Azure subscription. The following features are documented in code but require Entra ID P1/P2 to enforce:
 
-**Conditional Access enforcement.** The `conditional_access` module defines 5 policies covering MFA, legacy auth blocking, device compliance, and risk-based sign-in controls. These are set to `enabledForReportingButNotEnforced` on a personal tenant. Activation requires P1.
-
-**PIM eligible role assignments.** The `pim-assignments.json` template and `bootstrap.sh` PIM section are written for production use. Eligible role activation requires P2.
-
-**Sentinel automation rule.** The Logic App playbook uses an HTTP trigger. Connecting it to Sentinel incident creation via an automation rule requires the Microsoft Sentinel Logic Apps connector, which is managed through the Defender portal on personal tenants.
+- **Conditional Access enforcement** — 5 policies defined (MFA, legacy auth blocking, device compliance, risk-based sign-in). Set to `enabledForReportingButNotEnforced` on a free tenant. Activation requires P1.
+- **PIM eligible role assignments** — Template and bootstrap script written for production use. Eligible role activation requires P2.
+- **Sentinel automation rule** — Logic App playbook uses an HTTP trigger. Connecting it to Sentinel incident creation requires the Microsoft Sentinel Logic Apps connector via Defender portal.
 
 All code is production-ready. These are licensing constraints, not architectural gaps.
 
@@ -98,7 +94,7 @@ az provider register --namespace Microsoft.Security
 az provider register --namespace Microsoft.Logic
 ```
 
-## Deployment
+## Deploy
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
@@ -117,9 +113,9 @@ RESOURCE_GROUP=zero-trust-identity-rg WORKSPACE_NAME=zt-identity-law ./scripts/t
 
 ## Stack
 
-Terraform · Azure CLI · Microsoft Entra ID · Azure Key Vault · Azure Storage · Microsoft Sentinel · Defender for Cloud · Log Analytics · Azure Monitor · Azure Logic Apps · GitHub Actions OIDC
+Terraform · Azure CLI · Microsoft Entra ID · Conditional Access · PIM · Azure Key Vault · Azure Storage · Defender for Cloud · Log Analytics · Microsoft Sentinel · Azure Monitor · Azure Logic Apps · GitHub Actions OIDC
 
 ## Related Projects
 
-- [LLM Gateway and Observability Platform](https://github.com/jordann6/llm-gateway) - FastAPI on ECS Fargate, multi-provider LLM routing, DynamoDB caching, CloudWatch observability
-- [Cloud Security Lab](https://github.com/jordann6/cloud-security-lab) - Full AWS and Kubernetes threat detection, Pacu attack chain, Falco, OpenSearch SIEM, MITRE ATT&CK kill chain
+- [Cloud Security Lab](https://github.com/jordann6/cloud-security-lab) — Full AWS and Kubernetes threat detection, Pacu attack chain, Falco runtime security, OpenSearch SIEM, MITRE ATT&CK kill chain
+- [Azure DevSecOps Pipeline](https://github.com/jordann6/azure-devsecops-project) — 4-stage GitHub Actions pipeline with SAST, Trivy, OWASP ZAP, and hardened AKS blue-green deployment

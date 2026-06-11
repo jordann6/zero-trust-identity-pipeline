@@ -47,6 +47,7 @@ resource "azurerm_monitor_metric_alert" "key_vault_throttling" {
 }
 
 resource "azurerm_monitor_activity_log_alert" "role_assignment_change" {
+  location            = "global"
   name                = "zt-role-assignment-change"
   resource_group_name = var.resource_group_name
   scopes              = [var.subscription_scope]
@@ -64,6 +65,7 @@ resource "azurerm_monitor_activity_log_alert" "role_assignment_change" {
 }
 
 resource "azurerm_monitor_activity_log_alert" "key_vault_delete" {
+  location            = "global"
   name                = "zt-key-vault-delete"
   resource_group_name = var.resource_group_name
   scopes              = [var.subscription_scope]
@@ -81,6 +83,7 @@ resource "azurerm_monitor_activity_log_alert" "key_vault_delete" {
 }
 
 resource "azurerm_monitor_activity_log_alert" "security_policy_change" {
+  location            = "global"
   name                = "zt-security-policy-change"
   resource_group_name = var.resource_group_name
   scopes              = [var.subscription_scope]
@@ -98,6 +101,7 @@ resource "azurerm_monitor_activity_log_alert" "security_policy_change" {
 }
 
 resource "azurerm_monitor_activity_log_alert" "policy_assignment_change" {
+  location            = "global"
   name                = "zt-policy-assignment-change"
   resource_group_name = var.resource_group_name
   scopes              = [var.subscription_scope]

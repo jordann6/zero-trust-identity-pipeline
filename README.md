@@ -1,6 +1,6 @@
 # Azure Zero Trust Identity Pipeline
 
-[![Validate](https://github.com/jordann6/zero-trust-identity-pipeline/actions/workflows/validate.yml/badge.svg)](https://github.com/jordann6/zero-trust-identity-pipeline/actions/workflows/validate.yml)
+[![Security Gate](https://github.com/jordann6/zero-trust-identity-pipeline/actions/workflows/security-gate.yml/badge.svg)](https://github.com/jordann6/zero-trust-identity-pipeline/actions/workflows/security-gate.yml)
 
 A production-grade identity security pipeline built on Azure that enforces Zero Trust principles across authentication, privileged access, workload identity, and threat detection. Deployed across 7 phases using Terraform and Azure CLI.
 
